@@ -7,6 +7,8 @@ COPY Gemfile Gemfile.lock /app/
 
 WORKDIR /app/
 
+RUN gem install json -v '2.0.3'
+
 RUN bundle
 
 COPY . /app/
