@@ -1,1 +1,1 @@
-docker build -t telegram-bot-starter .
+docker build -t link-shortener-bot .

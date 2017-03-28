@@ -1,1 +1,1 @@
-docker run --restart=always -d telegram-bot-starter
+docker run --restart=always -d link-shortener-bot

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker stop $(docker ps -qa -f ancestor=telegram-bot-starter)
-docker rm $(docker ps -qa -f ancestor=telegram-bot-starter)
+docker stop $(docker ps -qa -f ancestor=link-shortener-bot)
+docker rm $(docker ps -qa -f ancestor=link-shortener-bot)
