@@ -15,6 +15,10 @@ def get_short_url(short_key)
   "http://#{ENV['SHORTENER_HOST']}/#{short_key}"
 end
 
+def get_url(text)
+  URI.extract(text, ['http', 'https'])[0] || ''
+end
+
 def handle_command(message)
   command, param = parse_command(message.text)
   case command
@@ -36,7 +40,7 @@ end
 
 def handle_message(message)
   # http://stackoverflow.com/questions/1805761/check-if-url-is-valid-ruby
-  if message.text =~ /\A#{URI::regexp(['http', 'https'])}\z/
+  unless (long_url = get_url(message.text)).empty?
       base_uri = ENV['FIREBASE_BASE_URI']
       secret_key = ENV['FIREBASE_SECRET_KEY']
       firebase = Firebase::Client.new(base_uri, secret_key)
@@ -46,7 +50,7 @@ def handle_message(message)
         response = firebase.get(short_key)
         break if response.body.nil?
       end
-      response = firebase.push(short_key, message.text)
+      response = firebase.push(short_key, long_url)
       if response.success?
         @bot.api.send_message(chat_id: message.chat.id, text: "#{['alright', 'cool', 'wow', 'ok', 'fine', 'there'].sample}, try #{get_short_url(short_key)}")
       else
