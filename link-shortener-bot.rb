@@ -5,10 +5,11 @@ require 'firebase'
 require 'uri'
 
 Envyable.load(File.expand_path('env.yml', File.dirname( __FILE__)))
-@alphabet = ENV['ALPHABET'].split('')
+@vowel = ['a', 'e', 'i', 'o', 'u']
+@consonant = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
 
 def get_short_key
-  (1..8).inject('') { |product| product + @alphabet.sample }
+  (1..4).reduce('') { |memo| memo + @consonant.sample + @vowel.sample }
 end
 
 def get_short_url(short_key)
