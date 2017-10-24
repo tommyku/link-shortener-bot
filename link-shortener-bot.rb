@@ -3,14 +3,9 @@ require 'telegram/bot'
 require 'envyable'
 require 'firebase'
 require 'uri'
+require_relative './services/simple_short_key'
 
 Envyable.load(File.expand_path('env.yml', File.dirname( __FILE__)))
-@vowel = ['a', 'e', 'i', 'o', 'u']
-@consonant = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z']
-
-def get_short_key
-  (1..4).reduce('') { |memo| memo + @consonant.sample + @vowel.sample }
-end
 
 def get_short_url(short_key)
   "http://#{ENV['SHORTENER_HOST']}/#{short_key}"
@@ -47,7 +42,7 @@ def handle_message(message)
       firebase = Firebase::Client.new(base_uri, secret_key)
       short_key = ''
       loop do
-        short_key = get_short_key
+        short_key = SimpleShortKey.get_key
         response = firebase.get(short_key)
         break if response.body.nil?
       end
