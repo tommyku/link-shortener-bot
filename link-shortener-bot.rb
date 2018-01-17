@@ -36,6 +36,7 @@ end
 
 def handle_message(message)
   # http://stackoverflow.com/questions/1805761/check-if-url-is-valid-ruby
+  reply_text = 'are you sure this is a link?';
   unless (long_url = get_url(message.text)).empty?
       base_uri = ENV['FIREBASE_BASE_URI']
       secret_key = ENV['FIREBASE_SECRET_KEY']
@@ -47,13 +48,16 @@ def handle_message(message)
         break if response.body.nil?
       end
       response = firebase.push(short_key, long_url)
-      if response.success?
-        @bot.api.send_message(chat_id: message.chat.id, text: "#{['alright', 'cool', 'wow', 'ok', 'fine', 'there'].sample}, try #{get_short_url(short_key)}")
+      reply_text = if response.success?
+        "#{['alright', 'cool', 'wow', 'ok', 'fine', 'there'].sample}, try #{get_short_url(short_key)}"
       else
-        @bot.api.send_message(chat_id: message.chat.id, text: 'something is wrong but I donno how to fix it :(')
+        'something is wrong but I donno how to fix it :('
       end
-  else
-    @bot.api.send_message(chat_id: message.chat.id, text: 'are you sure this is a link?')
+  end
+  begin
+    @bot.api.send_message(chat_id: message.chat.id, text: reply_text)
+  rescue Telegram::Bot::Exceptions::ResponseError
+    # do nothing
   end
 end
 
